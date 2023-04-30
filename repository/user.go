@@ -14,6 +14,21 @@ type userRepository struct {
 	db *sql.DB
 }
 
+func (u userRepository) ReadByID(ctx context.Context, ID int64) (model.User, error) {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (u userRepository) Update(ctx context.Context, ID int64, user model.User) error {
+	//TODO implement me
+	panic("implement me")
+}
+
+func (u userRepository) Delete(ctx context.Context, ID int64) error {
+	//TODO implement me
+	panic("implement me")
+}
+
 // Create ...
 func (u userRepository) Create(ctx context.Context, user model.User) (model.User, error) {
 	user.FirstOrder = time.Now()
@@ -48,4 +63,10 @@ func (u userRepository) Create(ctx context.Context, user model.User) (model.User
 	}
 
 	return user, nil
+}
+
+func NewUserRepository(db *sql.DB) UserRepository {
+	return userRepository{
+		db: db,
+	}
 }
