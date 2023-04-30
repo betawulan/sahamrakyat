@@ -28,3 +28,11 @@ func (u userDelivery) create(c echo.Context) error {
 
 	return c.JSON(http.StatusCreated, user)
 }
+
+func RegisterUserRoute(userService service.UserService, e *echo.Echo) {
+	handler := userDelivery{
+		userService: userService,
+	}
+
+	e.POST("/user", handler.create)
+}
