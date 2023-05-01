@@ -30,8 +30,12 @@ func (o orderItemService) ReadByID(ctx context.Context, ID int64) (model.OrderIt
 }
 
 func (o orderItemService) Update(ctx context.Context, ID int64, orderItem model.OrderItem) error {
-	//TODO implement me
-	panic("implement me")
+	err := o.orderItemRepo.Update(ctx, ID, orderItem)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (o orderItemService) Delete(ctx context.Context, ID int64) error {

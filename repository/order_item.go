@@ -70,8 +70,23 @@ func (o orderItemRepository) ReadByID(ctx context.Context, ID int64) (model.Orde
 }
 
 func (o orderItemRepository) Update(ctx context.Context, ID int64, orderItem model.OrderItem) error {
-	//TODO implement me
-	panic("implement me")
+	query, args, err := sq.Update("orders_item").
+		Set("name", orderItem.Name).
+		Set("price", orderItem.Price).
+		Set("expired_at", orderItem.ExpiredAt).
+		Set("updated_at", time.Now()).
+		Where(sq.Eq{"id": ID}).
+		ToSql()
+	if err != nil {
+		return err
+	}
+
+	_, err = o.db.ExecContext(ctx, query, args...)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (o orderItemRepository) Delete(ctx context.Context, ID int64) error {

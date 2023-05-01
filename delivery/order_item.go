@@ -51,6 +51,28 @@ func (o orderItemDelivery) readByID(c echo.Context) error {
 	return c.JSON(http.StatusOK, item)
 }
 
+func (o orderItemDelivery) update(c echo.Context) error {
+	var orderItem model.OrderItem
+
+	ID := c.Param("id")
+	IDint, err := strconv.Atoi(ID)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	err = c.Bind(&orderItem)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	err = o.orderItemService.Update(c.Request().Context(), int64(IDint), orderItem)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	return c.JSON(http.StatusNoContent, nil)
+}
+
 func RegisterOrderItemRoute(orderItemService service.OrderItemService, e *echo.Echo) {
 	handler := orderItemDelivery{
 		orderItemService: orderItemService,
@@ -58,4 +80,5 @@ func RegisterOrderItemRoute(orderItemService service.OrderItemService, e *echo.E
 
 	e.POST("/item", handler.create)
 	e.GET("/item/:id", handler.readByID)
+	e.PUT("/item/:id", handler.update)
 }
