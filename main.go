@@ -5,7 +5,7 @@ import (
 	"github.com/betawulan/sahamrakyat/delivery"
 	"log"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 	"github.com/spf13/viper"
 
 	"github.com/betawulan/sahamrakyat/repository"
