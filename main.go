@@ -32,8 +32,12 @@ func main() {
 	userRepo := repository.NewUserRepository(db)
 	userService := service.NewUserService(userRepo)
 
+	orderItemRepo := repository.NewOrderItemRepository(db)
+	orderItemService := service.NewOrderItemService(orderItemRepo)
+
 	e := echo.New()
 	delivery.RegisterUserRoute(userService, e)
+	delivery.RegisterOrderItemRoute(orderItemService, e)
 
 	e.Logger.Fatal(e.Start(":9090"))
 }
