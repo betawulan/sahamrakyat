@@ -29,8 +29,12 @@ func (u userService) Update(ctx context.Context, ID int64, user model.User) erro
 }
 
 func (u userService) Delete(ctx context.Context, ID int64) error {
-	//TODO implement me
-	panic("implement me")
+	err := u.userRepo.Delete(ctx, ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (u userService) Create(ctx context.Context, user model.User) (model.User, error) {

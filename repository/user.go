@@ -57,8 +57,21 @@ func (u userRepository) Update(ctx context.Context, ID int64, user model.User) e
 }
 
 func (u userRepository) Delete(ctx context.Context, ID int64) error {
-	//TODO implement me
-	panic("implement me")
+	query, args, err := sq.Update("user").
+		Set("deleted_at", time.Now()).
+		Set("status_deleted", true).
+		Where(sq.Eq{"id": ID}).
+		ToSql()
+	if err != nil {
+		return err
+	}
+
+	_, err = u.db.ExecContext(ctx, query, args...)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // Create ...
