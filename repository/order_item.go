@@ -18,8 +18,7 @@ func (o orderItemRepository) Create(ctx context.Context, orderItem model.OrderIt
 	orderItem.CreatedAt = time.Now()
 
 	query, args, err := sq.Insert("orders_item").
-		Columns("id",
-			"name",
+		Columns("name",
 			"price",
 			"expired_at",
 			"created_at").
