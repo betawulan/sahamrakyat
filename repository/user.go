@@ -36,7 +36,7 @@ func (u userRepository) Create(ctx context.Context, user model.User) (model.User
 	user.DeletedAt = time.Now()
 
 	query, args, err := sq.Insert("user").
-		Columns("full_name",
+		Columns("fullname",
 			"first_order",
 			"created_at",
 			"updated_at",

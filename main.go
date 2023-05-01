@@ -2,12 +2,13 @@ package main
 
 import (
 	"database/sql"
-	"github.com/betawulan/sahamrakyat/delivery"
 	"log"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/labstack/echo/v4"
 	"github.com/spf13/viper"
 
+	"github.com/betawulan/sahamrakyat/delivery"
 	"github.com/betawulan/sahamrakyat/repository"
 	"github.com/betawulan/sahamrakyat/service"
 )
