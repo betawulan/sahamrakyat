@@ -15,8 +15,26 @@ type userRepository struct {
 }
 
 func (u userRepository) ReadByID(ctx context.Context, ID int64) (model.User, error) {
-	//TODO implement me
-	panic("implement me")
+	query, args, err := sq.Select("id",
+		"fullname",
+		"first_order").
+		From("user").
+		Where(sq.Eq{"id": ID}).
+		ToSql()
+	if err != nil {
+		return model.User{}, err
+	}
+
+	row := u.db.QueryRowContext(ctx, query, args...)
+	var user model.User
+	err = row.Scan(&user.ID,
+		&user.FullName,
+		&user.FirstOrder)
+	if err != nil {
+		return model.User{}, err
+	}
+
+	return user, nil
 }
 
 func (u userRepository) Update(ctx context.Context, ID int64, user model.User) error {
