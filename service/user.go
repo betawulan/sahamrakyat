@@ -20,8 +20,12 @@ func (u userService) ReadByID(ctx context.Context, ID int64) (model.User, error)
 }
 
 func (u userService) Update(ctx context.Context, ID int64, user model.User) error {
-	//TODO implement me
-	panic("implement me")
+	err := u.userRepo.Update(ctx, ID, user)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (u userService) Delete(ctx context.Context, ID int64) error {

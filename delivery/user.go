@@ -51,6 +51,28 @@ func (u userDelivery) readByID(c echo.Context) error {
 	return c.JSON(http.StatusOK, usr)
 }
 
+func (u userDelivery) update(c echo.Context) error {
+	var user model.User
+
+	ID := c.Param("id")
+	IDint, err := strconv.Atoi(ID)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	err = c.Bind(&user)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err)
+	}
+
+	err = u.userService.Update(c.Request().Context(), int64(IDint), user)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	return c.JSON(http.StatusNoContent, nil)
+}
+
 func RegisterUserRoute(userService service.UserService, e *echo.Echo) {
 	handler := userDelivery{
 		userService: userService,
@@ -58,4 +80,5 @@ func RegisterUserRoute(userService service.UserService, e *echo.Echo) {
 
 	e.POST("/user", handler.create)
 	e.GET("/user/:id", handler.readByID)
+	e.PUT("/user/:id", handler.update)
 }

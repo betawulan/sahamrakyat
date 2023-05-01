@@ -38,8 +38,22 @@ func (u userRepository) ReadByID(ctx context.Context, ID int64) (model.User, err
 }
 
 func (u userRepository) Update(ctx context.Context, ID int64, user model.User) error {
-	//TODO implement me
-	panic("implement me")
+	query, args, err := sq.Update("user").
+		Set("fullname", user.FullName).
+		Set("first_order", user.FirstOrder).
+		Set("updated_at", time.Now()).
+		Where(sq.Eq{"id": ID}).
+		ToSql()
+	if err != nil {
+		return err
+	}
+
+	_, err = u.db.ExecContext(ctx, query, args...)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (u userRepository) Delete(ctx context.Context, ID int64) error {
