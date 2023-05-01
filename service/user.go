@@ -46,6 +46,19 @@ func (u userService) Create(ctx context.Context, user model.User) (model.User, e
 	return user, nil
 }
 
+func (u userService) Read(ctx context.Context, filter model.UserFilter) (model.UserResponse, error) {
+	users, err := u.userRepo.Read(ctx, filter)
+	if err != nil {
+		return model.UserResponse{}, err
+	}
+
+	response := model.UserResponse{
+		Users: users,
+	}
+
+	return response, nil
+}
+
 func NewUserService(userRepository repository.UserRepository) UserService {
 	return userService{
 		userRepo: userRepository,

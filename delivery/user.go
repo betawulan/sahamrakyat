@@ -88,6 +88,37 @@ func (u userDelivery) delete(c echo.Context) error {
 	return c.JSON(http.StatusNoContent, nil)
 }
 
+func (u userDelivery) read(c echo.Context) error {
+	filter := model.UserFilter{}
+
+	limit := c.QueryParam("limit")
+	if limit != "" {
+		limitInt, err := strconv.Atoi(limit)
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, err)
+		}
+
+		filter.Limit = uint64(limitInt)
+	}
+
+	page := c.QueryParam("page")
+	if page != "" {
+		pageInt, err := strconv.Atoi(page)
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, err)
+		}
+
+		filter.Page = pageInt
+	}
+
+	users, err := u.userService.Read(c.Request().Context(), filter)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	return c.JSON(http.StatusOK, users)
+}
+
 func RegisterUserRoute(userService service.UserService, e *echo.Echo) {
 	handler := userDelivery{
 		userService: userService,
@@ -97,4 +128,5 @@ func RegisterUserRoute(userService service.UserService, e *echo.Echo) {
 	e.GET("/user/:id", handler.readByID)
 	e.PUT("/user/:id", handler.update)
 	e.DELETE("/user/:id", handler.delete)
+	e.GET("/user", handler.read)
 }

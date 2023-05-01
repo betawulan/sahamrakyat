@@ -10,3 +10,12 @@ type User struct {
 	UpdatedAt  time.Time `json:"-"`
 	DeletedAt  time.Time `json:"-"`
 }
+
+type UserFilter struct {
+	Limit uint64
+	Page  int
+}
+
+type UserResponse struct {
+	Users []User `json:"users"`
+}

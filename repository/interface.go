@@ -10,4 +10,5 @@ type UserRepository interface {
 	ReadByID(ctx context.Context, ID int64) (model.User, error)
 	Update(ctx context.Context, ID int64, user model.User) error
 	Delete(ctx context.Context, ID int64) error
+	Read(ctx context.Context, filter model.UserFilter) ([]model.User, error)
 }

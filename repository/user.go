@@ -103,6 +103,50 @@ func (u userRepository) Create(ctx context.Context, user model.User) (model.User
 	return user, nil
 }
 
+func (u userRepository) Read(ctx context.Context, filter model.UserFilter) ([]model.User, error) {
+	querySelect := sq.Select("id",
+		"fullname",
+		"first_order").
+		From("user")
+
+	if filter.Limit != 0 {
+		querySelect = querySelect.Limit(filter.Limit)
+	}
+
+	if filter.Page != 0 {
+		querySelect = querySelect.Offset((uint64(filter.Page) - 1) * filter.Limit)
+	}
+
+	query, args, err := querySelect.ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := u.db.QueryContext(ctx, query, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	users := make([]model.User, 0)
+	for rows.Next() {
+		var user model.User
+
+		err = rows.Scan(
+			&user.ID,
+			&user.FullName,
+			&user.FirstOrder)
+		if err != nil {
+			return nil, err
+		}
+
+		users = append(users, user)
+	}
+
+	return users, nil
+}
+
 func NewUserRepository(db *sql.DB) UserRepository {
 	return userRepository{
 		db: db,
