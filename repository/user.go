@@ -50,20 +50,14 @@ func (u userRepository) Delete(ctx context.Context, ID int64) error {
 // Create ...
 func (u userRepository) Create(ctx context.Context, user model.User) (model.User, error) {
 	user.CreatedAt = time.Now()
-	user.UpdatedAt = time.Now()
-	user.DeletedAt = time.Now()
 
 	query, args, err := sq.Insert("user").
 		Columns("fullname",
 			"first_order",
-			"created_at",
-			"updated_at",
-			"deleted_at").
+			"created_at").
 		Values(user.FullName,
 			user.FirstOrder,
-			user.CreatedAt,
-			user.UpdatedAt,
-			user.DeletedAt).
+			user.CreatedAt).
 		ToSql()
 	if err != nil {
 		return model.User{}, err
