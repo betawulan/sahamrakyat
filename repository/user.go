@@ -31,7 +31,6 @@ func (u userRepository) Delete(ctx context.Context, ID int64) error {
 
 // Create ...
 func (u userRepository) Create(ctx context.Context, user model.User) (model.User, error) {
-	user.FirstOrder = time.Now()
 	user.CreatedAt = time.Now()
 	user.UpdatedAt = time.Now()
 	user.DeletedAt = time.Now()
