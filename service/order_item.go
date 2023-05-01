@@ -21,8 +21,12 @@ func (o orderItemService) Create(ctx context.Context, orderItem model.OrderItem)
 }
 
 func (o orderItemService) ReadByID(ctx context.Context, ID int64) (model.OrderItem, error) {
-	//TODO implement me
-	panic("implement me")
+	orderItem, err := o.orderItemRepo.ReadByID(ctx, ID)
+	if err != nil {
+		return model.OrderItem{}, err
+	}
+
+	return orderItem, nil
 }
 
 func (o orderItemService) Update(ctx context.Context, ID int64, orderItem model.OrderItem) error {
