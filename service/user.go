@@ -11,8 +11,12 @@ type userService struct {
 }
 
 func (u userService) ReadByID(ctx context.Context, ID int64) (model.User, error) {
-	//TODO implement me
-	panic("implement me")
+	user, err := u.userRepo.ReadByID(ctx, ID)
+	if err != nil {
+		return model.User{}, err
+	}
+
+	return user, nil
 }
 
 func (u userService) Update(ctx context.Context, ID int64, user model.User) error {
