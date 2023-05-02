@@ -9,8 +9,9 @@ type UserService interface {
 	Create(ctx context.Context, user model.User) (model.User, error)
 	ReadByID(ctx context.Context, ID int64) (model.User, error)
 	Update(ctx context.Context, ID int64, user model.User) error
-	Delete(ctx context.Context, ID int64) error
 	Read(ctx context.Context, filter model.UserFilter) (model.UserResponse, error)
+	Publish(ctx context.Context, ID int64) error   // soft delete
+	UnPublish(ctx context.Context, ID int64) error // soft delete
 }
 
 type OrderItemService interface {

@@ -10,6 +10,24 @@ type userService struct {
 	userRepo repository.UserRepository
 }
 
+func (u userService) Publish(ctx context.Context, ID int64) error {
+	err := u.userRepo.Publish(ctx, ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (u userService) UnPublish(ctx context.Context, ID int64) error {
+	err := u.userRepo.UnPublish(ctx, ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (u userService) ReadByID(ctx context.Context, ID int64) (model.User, error) {
 	user, err := u.userRepo.ReadByID(ctx, ID)
 	if err != nil {
@@ -21,15 +39,6 @@ func (u userService) ReadByID(ctx context.Context, ID int64) (model.User, error)
 
 func (u userService) Update(ctx context.Context, ID int64, user model.User) error {
 	err := u.userRepo.Update(ctx, ID, user)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (u userService) Delete(ctx context.Context, ID int64) error {
-	err := u.userRepo.Delete(ctx, ID)
 	if err != nil {
 		return err
 	}

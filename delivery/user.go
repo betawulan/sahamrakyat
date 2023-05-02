@@ -73,21 +73,6 @@ func (u userDelivery) update(c echo.Context) error {
 	return c.JSON(http.StatusNoContent, nil)
 }
 
-func (u userDelivery) delete(c echo.Context) error {
-	ID := c.Param("id")
-	IDint, err := strconv.Atoi(ID)
-	if err != nil {
-		return c.JSON(http.StatusBadRequest, err)
-	}
-
-	err = u.userService.Delete(c.Request().Context(), int64(IDint))
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, err)
-	}
-
-	return c.JSON(http.StatusNoContent, nil)
-}
-
 func (u userDelivery) read(c echo.Context) error {
 	filter := model.UserFilter{}
 
@@ -119,6 +104,36 @@ func (u userDelivery) read(c echo.Context) error {
 	return c.JSON(http.StatusOK, users)
 }
 
+func (u userDelivery) publish(c echo.Context) error {
+	ID := c.Param("id")
+	IDint, err := strconv.Atoi(ID)
+	if err != nil {
+		return err
+	}
+
+	err = u.userService.Publish(c.Request().Context(), int64(IDint))
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	return c.JSON(http.StatusNoContent, nil)
+}
+
+func (u userDelivery) unPublish(c echo.Context) error {
+	ID := c.Param("id")
+	IDint, err := strconv.Atoi(ID)
+	if err != nil {
+		return err
+	}
+
+	err = u.userService.UnPublish(c.Request().Context(), int64(IDint))
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	return c.JSON(http.StatusNoContent, nil)
+}
+
 func RegisterUserRoute(userService service.UserService, e *echo.Echo) {
 	handler := userDelivery{
 		userService: userService,
@@ -127,6 +142,7 @@ func RegisterUserRoute(userService service.UserService, e *echo.Echo) {
 	e.POST("/user", handler.create)
 	e.GET("/user/:id", handler.readByID)
 	e.PUT("/user/:id", handler.update)
-	e.DELETE("/user/:id", handler.delete)
 	e.GET("/user", handler.read)
+	e.PATCH("/user/:id/publish", handler.publish)
+	e.PATCH("/user/:id/unpublish", handler.unPublish)
 }

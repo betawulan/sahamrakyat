@@ -14,6 +14,42 @@ type userRepository struct {
 	db *sql.DB
 }
 
+func (u userRepository) Publish(ctx context.Context, ID int64) error {
+	query, args, err := sq.Update("user").
+		Set("deleted_at", time.Now()).
+		Set("status_deleted", false).
+		Where(sq.Eq{"id": ID}).
+		ToSql()
+	if err != nil {
+		return err
+	}
+
+	_, err = u.db.ExecContext(ctx, query, args...)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (u userRepository) UnPublish(ctx context.Context, ID int64) error {
+	query, args, err := sq.Update("user").
+		Set("deleted_at", time.Now()).
+		Set("status_deleted", true).
+		Where(sq.Eq{"id": ID}).
+		ToSql()
+	if err != nil {
+		return err
+	}
+
+	_, err = u.db.ExecContext(ctx, query, args...)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (u userRepository) ReadByID(ctx context.Context, ID int64) (model.User, error) {
 	query, args, err := sq.Select("id",
 		"fullname",
@@ -42,24 +78,6 @@ func (u userRepository) Update(ctx context.Context, ID int64, user model.User) e
 		Set("fullname", user.FullName).
 		Set("first_order", user.FirstOrder).
 		Set("updated_at", time.Now()).
-		Where(sq.Eq{"id": ID}).
-		ToSql()
-	if err != nil {
-		return err
-	}
-
-	_, err = u.db.ExecContext(ctx, query, args...)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (u userRepository) Delete(ctx context.Context, ID int64) error {
-	query, args, err := sq.Update("user").
-		Set("deleted_at", time.Now()).
-		Set("status_deleted", true).
 		Where(sq.Eq{"id": ID}).
 		ToSql()
 	if err != nil {
