@@ -73,6 +73,37 @@ func (o orderItemDelivery) update(c echo.Context) error {
 	return c.JSON(http.StatusNoContent, nil)
 }
 
+func (o orderItemDelivery) read(c echo.Context) error {
+	filter := model.OrderItemFilter{}
+
+	limit := c.QueryParam("limit")
+	if limit != "" {
+		limitInt, err := strconv.Atoi(limit)
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, err)
+		}
+
+		filter.Limit = uint64(limitInt)
+	}
+
+	page := c.QueryParam("page")
+	if page != "" {
+		pageInt, err := strconv.Atoi(page)
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, err)
+		}
+
+		filter.Page = pageInt
+	}
+
+	ordersItem, err := o.orderItemService.Read(c.Request().Context(), filter)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	return c.JSON(http.StatusOK, ordersItem)
+}
+
 func RegisterOrderItemRoute(orderItemService service.OrderItemService, e *echo.Echo) {
 	handler := orderItemDelivery{
 		orderItemService: orderItemService,
@@ -81,4 +112,5 @@ func RegisterOrderItemRoute(orderItemService service.OrderItemService, e *echo.E
 	e.POST("/item", handler.create)
 	e.GET("/item/:id", handler.readByID)
 	e.PUT("/item/:id", handler.update)
+	e.GET("/item", handler.read)
 }

@@ -18,4 +18,5 @@ type OrderItemService interface {
 	ReadByID(ctx context.Context, ID int64) (model.OrderItem, error)
 	Update(ctx context.Context, ID int64, orderItem model.OrderItem) error
 	Delete(ctx context.Context, ID int64) error
+	Read(ctx context.Context, filter model.OrderItemFilter) (model.OrderItemResponse, error)
 }

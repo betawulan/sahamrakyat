@@ -11,6 +11,17 @@ type orderItemService struct {
 	orderItemRepo repository.OrderItemRepository
 }
 
+func (o orderItemService) Read(ctx context.Context, filter model.OrderItemFilter) (model.OrderItemResponse, error) {
+	ordersItem, err := o.orderItemRepo.Read(ctx, filter)
+	if err != nil {
+		return model.OrderItemResponse{}, err
+	}
+
+	return model.OrderItemResponse{
+		OrdersItem: ordersItem,
+	}, nil
+}
+
 func (o orderItemService) Create(ctx context.Context, orderItem model.OrderItem) (model.OrderItem, error) {
 	orderItem, err := o.orderItemRepo.Create(ctx, orderItem)
 	if err != nil {

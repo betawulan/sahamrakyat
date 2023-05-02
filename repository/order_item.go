@@ -14,6 +14,52 @@ type orderItemRepository struct {
 	db *sql.DB
 }
 
+func (o orderItemRepository) Read(ctx context.Context, filter model.OrderItemFilter) ([]model.OrderItem, error) {
+	querySelect := sq.Select("id",
+		"name",
+		"price",
+		"expired_at").
+		From("orders_item")
+
+	if filter.Limit != 0 {
+		querySelect = querySelect.Limit(filter.Limit)
+	}
+
+	if filter.Page != 0 {
+		querySelect = querySelect.Offset((uint64(filter.Page) - 1) * filter.Limit)
+	}
+
+	query, args, err := querySelect.ToSql()
+	if err != nil {
+		return nil, err
+	}
+
+	rows, err := o.db.QueryContext(ctx, query, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	ordersItem := make([]model.OrderItem, 0)
+	for rows.Next() {
+		var orderItem model.OrderItem
+
+		err = rows.Scan(
+			&orderItem.ID,
+			&orderItem.Name,
+			&orderItem.Price,
+			&orderItem.ExpiredAt)
+		if err != nil {
+			return nil, err
+		}
+
+		ordersItem = append(ordersItem, orderItem)
+	}
+
+	return ordersItem, nil
+}
+
 func (o orderItemRepository) Create(ctx context.Context, orderItem model.OrderItem) (model.OrderItem, error) {
 	orderItem.CreatedAt = time.Now()
 

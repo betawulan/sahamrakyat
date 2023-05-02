@@ -11,3 +11,12 @@ type OrderItem struct {
 	UpdatedAt time.Time `json:"-"`
 	DeletedAt time.Time `json:"-"`
 }
+
+type OrderItemFilter struct {
+	Limit uint64
+	Page  int
+}
+
+type OrderItemResponse struct {
+	OrdersItem []OrderItem `json:"orders_item"`
+}
