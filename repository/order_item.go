@@ -14,6 +14,42 @@ type orderItemRepository struct {
 	db *sql.DB
 }
 
+func (o orderItemRepository) Publish(ctx context.Context, ID int64) error {
+	query, args, err := sq.Update("orders_item").
+		Set("deleted_at", time.Now()).
+		Set("status_deleted", true).
+		Where(sq.Eq{"id": ID}).
+		ToSql()
+	if err != nil {
+		return err
+	}
+
+	_, err = o.db.ExecContext(ctx, query, args...)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o orderItemRepository) UnPublish(ctx context.Context, ID int64) error {
+	query, args, err := sq.Update("orders_item").
+		Set("deleted_at", time.Now()).
+		Set("status_deleted", false).
+		Where(sq.Eq{"id": ID}).
+		ToSql()
+	if err != nil {
+		return err
+	}
+
+	_, err = o.db.ExecContext(ctx, query, args...)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (o orderItemRepository) Read(ctx context.Context, filter model.OrderItemFilter) ([]model.OrderItem, error) {
 	querySelect := sq.Select("id",
 		"name",
@@ -133,11 +169,6 @@ func (o orderItemRepository) Update(ctx context.Context, ID int64, orderItem mod
 	}
 
 	return nil
-}
-
-func (o orderItemRepository) Delete(ctx context.Context, ID int64) error {
-	//TODO implement me
-	panic("implement me")
 }
 
 func NewOrderItemRepository(db *sql.DB) OrderItemRepository {

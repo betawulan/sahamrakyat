@@ -11,6 +11,24 @@ type orderItemService struct {
 	orderItemRepo repository.OrderItemRepository
 }
 
+func (o orderItemService) Publish(ctx context.Context, ID int64) error {
+	err := o.orderItemRepo.Publish(ctx, ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (o orderItemService) UnPublish(ctx context.Context, ID int64) error {
+	err := o.orderItemRepo.UnPublish(ctx, ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (o orderItemService) Read(ctx context.Context, filter model.OrderItemFilter) (model.OrderItemResponse, error) {
 	ordersItem, err := o.orderItemRepo.Read(ctx, filter)
 	if err != nil {
@@ -47,11 +65,6 @@ func (o orderItemService) Update(ctx context.Context, ID int64, orderItem model.
 	}
 
 	return nil
-}
-
-func (o orderItemService) Delete(ctx context.Context, ID int64) error {
-	//TODO implement me
-	panic("implement me")
 }
 
 func NewOrderItemService(orderItemRepository repository.OrderItemRepository) OrderItemService {

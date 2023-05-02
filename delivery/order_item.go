@@ -104,6 +104,36 @@ func (o orderItemDelivery) read(c echo.Context) error {
 	return c.JSON(http.StatusOK, ordersItem)
 }
 
+func (o orderItemDelivery) publish(c echo.Context) error {
+	ID := c.Param("id")
+	IDint, err := strconv.Atoi(ID)
+	if err != nil {
+		return err
+	}
+
+	err = o.orderItemService.Publish(c.Request().Context(), int64(IDint))
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	return c.JSON(http.StatusNoContent, nil)
+}
+
+func (o orderItemDelivery) unPublish(c echo.Context) error {
+	ID := c.Param("id")
+	IDint, err := strconv.Atoi(ID)
+	if err != nil {
+		return err
+	}
+
+	err = o.orderItemService.UnPublish(c.Request().Context(), int64(IDint))
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	return c.JSON(http.StatusNoContent, nil)
+}
+
 func RegisterOrderItemRoute(orderItemService service.OrderItemService, e *echo.Echo) {
 	handler := orderItemDelivery{
 		orderItemService: orderItemService,
@@ -113,4 +143,6 @@ func RegisterOrderItemRoute(orderItemService service.OrderItemService, e *echo.E
 	e.GET("/item/:id", handler.readByID)
 	e.PUT("/item/:id", handler.update)
 	e.GET("/item", handler.read)
+	e.PATCH("/item/:id/publish", handler.publish)
+	e.PATCH("/item/:id/unpublish", handler.unPublish)
 }
