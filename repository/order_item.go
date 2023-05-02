@@ -17,7 +17,7 @@ type orderItemRepository struct {
 func (o orderItemRepository) Publish(ctx context.Context, ID int64) error {
 	query, args, err := sq.Update("orders_item").
 		Set("deleted_at", time.Now()).
-		Set("status_deleted", true).
+		Set("status_deleted", false).
 		Where(sq.Eq{"id": ID}).
 		ToSql()
 	if err != nil {
@@ -35,7 +35,7 @@ func (o orderItemRepository) Publish(ctx context.Context, ID int64) error {
 func (o orderItemRepository) UnPublish(ctx context.Context, ID int64) error {
 	query, args, err := sq.Update("orders_item").
 		Set("deleted_at", time.Now()).
-		Set("status_deleted", false).
+		Set("status_deleted", true).
 		Where(sq.Eq{"id": ID}).
 		ToSql()
 	if err != nil {
