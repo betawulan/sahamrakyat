@@ -3,6 +3,7 @@ package delivery
 import (
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 
@@ -94,6 +95,18 @@ func (o orderItemDelivery) read(c echo.Context) error {
 		}
 
 		filter.Page = pageInt
+	}
+
+	status := c.QueryParam("status")
+	if status != "" {
+		statuses := strings.Split(status, ",")
+		for _, value := range statuses {
+			statusInt, err := strconv.Atoi(value)
+			if err != nil {
+				return c.JSON(http.StatusBadRequest, err)
+			}
+			filter.Status = append(filter.Status, statusInt)
+		}
 	}
 
 	ordersItem, err := o.orderItemService.Read(c.Request().Context(), filter)
