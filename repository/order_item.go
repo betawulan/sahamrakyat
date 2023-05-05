@@ -65,10 +65,6 @@ func (o orderItemRepository) Read(ctx context.Context, filter model.OrderItemFil
 		querySelect = querySelect.Offset((uint64(filter.Page) - 1) * filter.Limit)
 	}
 
-	if len(filter.Status) > 0 {
-		querySelect = querySelect.Where(sq.Eq{"status_deleted": filter.Status})
-	}
-
 	query, args, err := querySelect.ToSql()
 	if err != nil {
 		return nil, err

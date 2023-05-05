@@ -13,9 +13,8 @@ type OrderItem struct {
 }
 
 type OrderItemFilter struct {
-	Limit  uint64
-	Page   int
-	Status []int
+	Limit uint64
+	Page  int
 }
 
 type OrderItemResponse struct {
